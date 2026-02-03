@@ -19,22 +19,28 @@ public class CategoryController {
 
     //GetMapping added to method and stating an endpoint for the API
     @GetMapping("api/public/categories")
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+    public ResponseEntity<List<Category>> getAllCategories() {
+        List<Category> categories = categoryService.getAllCategories();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     //PostMapping used in pair with RequestPost: PostMapping annotate the metho as POST and RequestBody annotate the variable parameter as a request for the usage of the POST method
     @PostMapping("api/admin/categories")
-    public String createCategory(@RequestBody Category category) {
+    public ResponseEntity<String> createCategory(@RequestBody Category category) {
+
         categoryService.createCategory(category);
-        return "Category added successfully";
+        return new ResponseEntity<>("Category added successfully", HttpStatus.CREATED);
     }
 
     @DeleteMapping("/api/admin/categories/{categoryId}")
-    public ResponseEntity deleteCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
         try {
             String status = categoryService.deleteCategory(categoryId);
-            return new ResponseEntity<>(status, HttpStatus.OK);
+            // 3 different ways of throwing response code exception:
+
+            // 1 - return new ResponseEntity<>(status, HttpStatus.OK);
+            // 2 - return ResponseEntity.ok(status);
+            /* 3 - */ return ResponseEntity.status(HttpStatus.OK).body(status);
             //ResponseStatusException for returning a message to the client with the status code
         } catch (ResponseStatusException e) {
             return new ResponseEntity<>(e.getReason(), e.getStatusCode());
