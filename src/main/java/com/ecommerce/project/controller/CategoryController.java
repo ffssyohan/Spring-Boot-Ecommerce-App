@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 public class CategoryController {
 
     @Autowired
@@ -18,21 +19,24 @@ public class CategoryController {
 
 
     //GetMapping added to method and stating an endpoint for the API
-    @GetMapping("api/public/categories")
+//    @RequestMapping(value = "/public/categories", method = RequestMethod.GET)
+    @GetMapping("public/categories")
     public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> categories = categoryService.getAllCategories();
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     //PostMapping used in pair with RequestPost: PostMapping annotate the metho as POST and RequestBody annotate the variable parameter as a request for the usage of the POST method
-    @PostMapping("api/admin/categories")
+//    @RequestMapping(value = "/admin/categories", method = RequestMethod.POST)
+    @PostMapping("admin/categories")
     public ResponseEntity<String> createCategory(@RequestBody Category category) {
 
         categoryService.createCategory(category);
         return new ResponseEntity<>("Category added successfully", HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/api/admin/categories/{categoryId}")
+    //@RequestMapping(value = "/admin/categories/{categoryId}", method = RequestMethod.DELETE)
+    @DeleteMapping("/admin/categories/{categoryId}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
         try {
             String status = categoryService.deleteCategory(categoryId);
@@ -40,7 +44,8 @@ public class CategoryController {
 
             // 1 - return new ResponseEntity<>(status, HttpStatus.OK);
             // 2 - return ResponseEntity.ok(status);
-            /* 3 - */ return ResponseEntity.status(HttpStatus.OK).body(status);
+            /* 3 - */
+            return ResponseEntity.status(HttpStatus.OK).body(status);
             //ResponseStatusException for returning a message to the client with the status code
         } catch (ResponseStatusException e) {
             return new ResponseEntity<>(e.getReason(), e.getStatusCode());
@@ -48,8 +53,9 @@ public class CategoryController {
         }
     }
 
-    @PutMapping("/api/admin/categories/{categoryId}")
-    public ResponseEntity<String> updateCategory(@RequestBody Category category, @PathVariable Long categoryId){
+    //    @RequestMapping(value = "/admin/categories/{categoryId}", method = RequestMethod.PUT)
+    @PutMapping("/admin/categories/{categoryId}")
+    public ResponseEntity<String> updateCategory(@RequestBody Category category, @PathVariable Long categoryId) {
         try {
             Category savedCategory = categoryService.updateCategory(category, categoryId);
             return new ResponseEntity<>("Category name with category id: " + categoryId + " successfully updated to " + savedCategory.getCategoryName(), HttpStatus.OK);
