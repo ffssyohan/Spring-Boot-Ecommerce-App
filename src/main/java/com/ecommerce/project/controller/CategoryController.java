@@ -2,6 +2,7 @@ package com.ecommerce.project.controller;
 
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,8 @@ public class CategoryController {
     //PostMapping used in pair with RequestPost: PostMapping annotate the metho as POST and RequestBody annotate the variable parameter as a request for the usage of the POST method
 //    @RequestMapping(value = "/admin/categories", method = RequestMethod.POST)
     @PostMapping("admin/categories")
-    public ResponseEntity<String> createCategory(@RequestBody Category category) {
+    // Both annotations should be used together at once as to validate data provided in posting methods
+    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category) {
 
         categoryService.createCategory(category);
         return new ResponseEntity<>("Category added successfully", HttpStatus.CREATED);
