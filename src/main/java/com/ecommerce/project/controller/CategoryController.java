@@ -1,6 +1,7 @@
 package com.ecommerce.project.controller;
 
 import com.ecommerce.project.model.Category;
+import com.ecommerce.project.payload.CategoryDTO;
 import com.ecommerce.project.payload.CategoryResponse;
 import com.ecommerce.project.service.CategoryService;
 import jakarta.validation.Valid;
@@ -28,10 +29,10 @@ public class CategoryController {
 //    @RequestMapping(value = "/admin/categories", method = RequestMethod.POST)
     @PostMapping("admin/categories")
     // Both annotations should be used together at once as to validate data provided in posting methods
-    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category) {
+    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTY) {
 
-        categoryService.createCategory(category);
-        return new ResponseEntity<>("Category added successfully", HttpStatus.CREATED);
+        CategoryDTO categoryDTO = categoryService.createCategory(categoryDTY);
+        return new ResponseEntity<>(categoryDTO, HttpStatus.CREATED);
     }
 
     //@RequestMapping(value = "/admin/categories/{categoryId}", method = RequestMethod.DELETE)
