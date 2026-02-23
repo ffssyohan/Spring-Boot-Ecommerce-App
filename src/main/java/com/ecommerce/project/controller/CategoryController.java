@@ -29,9 +29,9 @@ public class CategoryController {
 //    @RequestMapping(value = "/admin/categories", method = RequestMethod.POST)
     @PostMapping("admin/categories")
     // Both annotations should be used together at once as to validate data provided in posting methods
-    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTY) {
+    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
 
-        CategoryDTO categoryDTO = categoryService.createCategory(categoryDTY);
+        categoryDTO = categoryService.createCategory(categoryDTO);
         return new ResponseEntity<>(categoryDTO, HttpStatus.CREATED);
     }
 
@@ -44,8 +44,9 @@ public class CategoryController {
 
     //    @RequestMapping(value = "/admin/categories/{categoryId}", method = RequestMethod.PUT)
     @PutMapping("/admin/categories/{categoryId}")
-    public ResponseEntity<String> updateCategory(@Valid @RequestBody Category category, @PathVariable Long categoryId) {
-        Category savedCategory = categoryService.updateCategory(category, categoryId);
-        return new ResponseEntity<>("Category name with category id: " + categoryId + " successfully updated to " + savedCategory.getCategoryName(), HttpStatus.OK);
+    public ResponseEntity<CategoryDTO> updateCategory(@Valid @RequestBody CategoryDTO categoryDTO, @PathVariable Long categoryId) {
+
+        categoryDTO = categoryService.updateCategory(categoryDTO, categoryId);
+        return new ResponseEntity<>(categoryDTO, HttpStatus.OK);
     }
 }
