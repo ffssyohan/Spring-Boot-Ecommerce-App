@@ -19,8 +19,8 @@ public class CategoryController {
     //GetMapping added to method and stating an endpoint for the API
     //@RequestMapping(value = "/public/categories", method = RequestMethod.GET)
     @GetMapping("public/categories")
-    public ResponseEntity<CategoryResponse> getAllCategories() {
-        CategoryResponse categoryResponse = categoryService.getAllCategories();
+    public ResponseEntity<CategoryResponse> getAllCategories(@RequestParam(name = "pageNumber") Integer pageNumber, @RequestParam(name = "pageSize") Integer pageSize) {
+        CategoryResponse categoryResponse = categoryService.getAllCategories(pageNumber, pageSize);
         return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }
 
@@ -37,7 +37,7 @@ public class CategoryController {
     //@RequestMapping(value = "/admin/categories/{categoryId}", method = RequestMethod.DELETE)
     @DeleteMapping("/admin/categories/{categoryId}")
     public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable Long categoryId) {
-       CategoryDTO deletedCategory = categoryService.deleteCategory(categoryId);
+        CategoryDTO deletedCategory = categoryService.deleteCategory(categoryId);
         return new ResponseEntity<>(deletedCategory, HttpStatus.OK);
     }
 
