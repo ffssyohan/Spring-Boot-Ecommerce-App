@@ -4,6 +4,7 @@ import com.ecommerce.project.model.Product;
 import com.ecommerce.project.payload.ProductDTO;
 import com.ecommerce.project.payload.ProductResponse;
 import com.ecommerce.project.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,14 @@ public class ProductController {
         ProductResponse productResponse = productService.searchByProductKeyword(keyword);
 
         return new ResponseEntity<>(productResponse, HttpStatus.FOUND);
+    }
+
+    @PutMapping("/admin/products/{productId}")
+    public ResponseEntity<ProductDTO> updateProduct(@RequestBody Product product, @PathVariable Long productId) {
+
+        ProductDTO updatedProductDTO = productService.updateProduct(product, productId);
+
+        return new ResponseEntity<>(updatedProductDTO,HttpStatus.OK);
     }
 
 }
