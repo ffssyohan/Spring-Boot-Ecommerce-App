@@ -85,5 +85,9 @@ public class WebSecurityConfig {
                 "swagger-ui.html",
                 "webjars/**"
         ));
+
+        /* IMPORTANT After Spring Security 6, the pattern is to combine both lists (ignored and filtered) inside the same filterChain. It doesn't impact performance to a noticeable point, while persisting consistency and simplicity of code. One should only worry about performance for application that delivers, for an example, a huge amount of high quality images. And for that, one should use a CDN (Cloudflare, CloudFront) or a separated file server (S3, pure Nginx), in a way the request doesn't even touch the actual Java code.
+        *
+        * One should consider using ignoring() for static file folders (i.e. /resources/**, /static/**) and internal documentation that doesn't require any header protection*/
     }
 }
