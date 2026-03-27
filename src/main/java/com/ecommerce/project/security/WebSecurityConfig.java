@@ -19,7 +19,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -33,7 +32,7 @@ import java.util.Set;
 public class WebSecurityConfig {
 
     @Autowired
-    UserDetailsServiceImpl userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
@@ -71,8 +70,8 @@ public class WebSecurityConfig {
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
-                .requestMatchers("/api/public/**").permitAll()
-                .requestMatchers("/api/admin/**").permitAll()
+                //.requestMatchers("/api/public/**").permitAll()
+                //.requestMatchers("/api/admin/**").permitAll()
                 .requestMatchers("/api/test/**").permitAll()
                 .requestMatchers("/images/**").permitAll()
                 .anyRequest()
@@ -87,21 +86,23 @@ public class WebSecurityConfig {
         return http.build();
     }
 
+    /* IMPORTANT After Spring Security 6, the pattern is to combine both lists (ignored and filtered) inside the same filterChain. It doesn't impact performance to a noticeable point, while persisting consistency and simplicity of code. One should only worry about performance for application that delivers, for an example, a huge amount of high quality images. And for that, one should use a CDN (Cloudflare, CloudFront) or a separated file server (S3, pure Nginx), in a way the request doesn't even touch the actual Java code.
+     *
+     * One should consider using ignoring() for static file folders (i.e. /resources/**, /static/**) and internal documentation that doesn't require any header protection*/
+
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer(){
         return (web -> web.ignoring().requestMatchers(
                 "/v2/api-docs",
                 "/configuration/ui",
                 "/swagger-resources/**",
-                "configuration/security",
-                "swagger-ui.html",
-                "webjars/**"
+                "/configuration/security",
+                "/swagger-ui.html",
+                "/webjars/**"
         ));
-
-        /* IMPORTANT After Spring Security 6, the pattern is to combine both lists (ignored and filtered) inside the same filterChain. It doesn't impact performance to a noticeable point, while persisting consistency and simplicity of code. One should only worry about performance for application that delivers, for an example, a huge amount of high quality images. And for that, one should use a CDN (Cloudflare, CloudFront) or a separated file server (S3, pure Nginx), in a way the request doesn't even touch the actual Java code.
-        *
-        * One should consider using ignoring() for static file folders (i.e. /resources/**, /static/**) and internal documentation that doesn't require any header protection*/
     }
+
 
     @Bean
     public CommandLineRunner initData(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
