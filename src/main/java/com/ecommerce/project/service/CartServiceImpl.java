@@ -37,6 +37,19 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private AuthUtil authUtil;
 
+    private Cart createCart() {
+        Cart userCart = cartRepository.findCartByEmail(authUtil.loggedInEmail());
+        if (userCart != null) {
+            return userCart;
+        }
+
+        Cart cart = new Cart();
+        cart.setTotalPrice(0.00);
+        cart.setUser(authUtil.loggedInUser());
+        Cart newCart = cartRepository.save(cart);
+        return newCart;
+    }
+
     @Override
     public CartDTO addProductToCart(Long productId, Integer quantity) {
 
@@ -234,17 +247,33 @@ public class CartServiceImpl implements CartService {
         return "Product " + cartItem.getProduct().getProductName() + " removed from the cart.";
     }
 
-    private Cart createCart() {
-        Cart userCart = cartRepository.findCartByEmail(authUtil.loggedInEmail());
-        if (userCart != null) {
-            return userCart;
+    @Override
+    public void updateProductInCarts(Long cartId, Long productId) {
+        // checking if the cart exist first
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart", "cartId", cartId));
+
+        // retrieving the product from the cart
+        Product product = productRespository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
+        CartItem cartItem = cartItemRepository.findCartItemByProductAndCartId(cartId, productId);
+
+        if (cartItem == null) {
+            throw new APIException("Product " + product.getProductName() + " no available in the cart.");
         }
 
-        Cart cart = new Cart();
-        cart.setTotalPrice(0.00);
-        cart.setUser(authUtil.loggedInUser());
-        Cart newCart = cartRepository.save(cart);
-        return newCart;
+        // ex: 1000 - (100 * 2) = 800
+        double cartPrice = cart.getTotalPrice() - (cartItem.getProductPrice() * cartItem.getQuantity());
+
+        // 200
+        cartItem.setProductPrice(product.getSpecialPrice());
+
+        // 800 + (200 * 2) = 1200
+        cart.setTotalPrice(cartPrice + (cartItem.getProductPrice() * cartItem.getQuantity()));
+
+        cartItem = cartItemRepository.save(cartItem);
     }
+
 
 }
