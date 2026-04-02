@@ -126,7 +126,8 @@ public class CartServiceImpl implements CartService {
             throw new APIException("There's no carts to be shown.");
         }
 
-        List<CartDTO> cartDTOS = carts.stream().map(cart -> {
+        List<CartDTO> cartDTOS = carts.stream()
+                .map(cart -> {
                     CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
 
                     List<ProductDTO> products = cart.getCartItems().stream()

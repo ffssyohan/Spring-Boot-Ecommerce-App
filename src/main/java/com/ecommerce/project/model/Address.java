@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.boot.webmvc.autoconfigure.WebMvcProperties;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class Address {
 
     @NotBlank
     @Size(min = 5, message = "Building name must be at least 5 characters")
-    private String buildName;
+    private String buildingName;
 
     @NotBlank
     @Size(min = 5, message = "City name must be at least 5 characters")
@@ -43,16 +44,16 @@ public class Address {
     private String country;
 
     @NotBlank
-    @Size(min = 6, message = "Pincode name must be at least 6 characters")
+    @Size(min = 5, message = "Pincode name must be at least 5 characters")
     private String pincode;
 
-    @ToString.Exclude
-    @ManyToMany(mappedBy = "addresses")
-    private List<User> users = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Address(String street, String buildName, String city, String state, String country, String pincode) {
         this.street = street;
-        this.buildName = buildName;
+        this.buildingName = buildName;
         this.city = city;
         this.state = state;
         this.country = country;
