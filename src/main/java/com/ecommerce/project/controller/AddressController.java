@@ -30,6 +30,13 @@ public class AddressController {
         return new ResponseEntity<List<AddressDTO>>(addressList, HttpStatus.FOUND);
     }
 
+    @GetMapping("/addresses/{addressId}")
+public ResponseEntity<AddressDTO> getAddressById(@PathVariable Long addressId){
+        AddressDTO addressDTO = addressService.getAddressById(addressId);
+
+        return new ResponseEntity<AddressDTO>(addressDTO, HttpStatus.FOUND);
+    }
+
     @PostMapping("/addresses")
     public ResponseEntity<AddressDTO> createAddress(@Valid @RequestBody AddressDTO addressDTO) {
 
