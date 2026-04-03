@@ -37,16 +37,16 @@ public class AddressServiceImpl implements AddressService {
         address.setUser(user);
         Address savedAddress = addressRepository.save(address);
 
-         return modelMapper.map(savedAddress, AddressDTO.class);
+        return modelMapper.map(savedAddress, AddressDTO.class);
     }
 
     @Override
     public List<AddressDTO> getAddresses() {
-       List<Address> addresses = addressRepository.findAll();
+        List<Address> addresses = addressRepository.findAll();
 
-       if (addresses.isEmpty()){
-           throw new APIException("There's no addresses to be shown.");
-       }
+        if (addresses.isEmpty()) {
+            throw new APIException("There's no addresses to be shown.");
+        }
 
         return addresses.stream().map(address -> modelMapper.map(address, AddressDTO.class)).toList();
 
@@ -58,5 +58,16 @@ public class AddressServiceImpl implements AddressService {
                 .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
 
         return modelMapper.map(address, AddressDTO.class);
+    }
+
+    @Override
+    public List<AddressDTO> getUserAddresses(User user) {
+        List<Address> addresses = user.getAddresses();
+
+        if (addresses.isEmpty()) {
+            throw new APIException("There's no address to be shown.");
+        }
+
+        return addresses.stream().map(address -> modelMapper.map(address, AddressDTO.class)).toList();
     }
 }

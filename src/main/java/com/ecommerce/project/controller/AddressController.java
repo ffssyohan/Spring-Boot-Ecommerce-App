@@ -1,6 +1,5 @@
 package com.ecommerce.project.controller;
 
-import com.ecommerce.project.model.Address;
 import com.ecommerce.project.model.User;
 import com.ecommerce.project.payload.AddressDTO;
 import com.ecommerce.project.service.AddressService;
@@ -24,17 +23,26 @@ public class AddressController {
     private AddressService addressService;
 
     @GetMapping("/addresses")
-    public ResponseEntity<List<AddressDTO>> getAddresses(){
+    public ResponseEntity<List<AddressDTO>> getAddresses() {
         List<AddressDTO> addressList = addressService.getAddresses();
 
         return new ResponseEntity<List<AddressDTO>>(addressList, HttpStatus.FOUND);
     }
 
     @GetMapping("/addresses/{addressId}")
-public ResponseEntity<AddressDTO> getAddressById(@PathVariable Long addressId){
+    public ResponseEntity<AddressDTO> getAddressById(@PathVariable Long addressId) {
         AddressDTO addressDTO = addressService.getAddressById(addressId);
 
         return new ResponseEntity<AddressDTO>(addressDTO, HttpStatus.FOUND);
+    }
+
+    @GetMapping("/users/addresses")
+    public ResponseEntity<List<AddressDTO>> getUserAddresses() {
+        User user = authUtil.loggedInUser();
+
+        List<AddressDTO> addressesDTO = addressService.getUserAddresses(user);
+
+        return new ResponseEntity<List<AddressDTO>>(addressesDTO, HttpStatus.FOUND);
     }
 
     @PostMapping("/addresses")
