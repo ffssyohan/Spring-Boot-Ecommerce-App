@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -65,5 +66,12 @@ public class AddressController {
 
         return new ResponseEntity<AddressDTO>(updatedAddressDTO, HttpStatus.OK);
 
+    }
+
+    @DeleteMapping("/addresses/{addressId}")
+    public ResponseEntity<String> deleteAddress(@PathVariable Long addressId){
+        String status = addressService.deleteAddress(addressId);
+
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 }
