@@ -38,6 +38,4 @@ public class AuthUtil {
         return user;
 
     }
-
-
 }
