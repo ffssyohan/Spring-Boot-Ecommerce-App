@@ -1,4 +1,4 @@
-package com.ecommerce.project.config;
+package com.ecommerce.project.messaging.consumer;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;

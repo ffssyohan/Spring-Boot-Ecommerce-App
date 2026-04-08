@@ -2,6 +2,7 @@ package com.ecommerce.project.service;
 
 import com.ecommerce.project.exceptions.APIException;
 import com.ecommerce.project.exceptions.ResourceNotFoundException;
+import com.ecommerce.project.messaging.producer.CategoryProducer;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.payload.CategoryDTO;
 import com.ecommerce.project.payload.CategoryResponse;
@@ -27,6 +28,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private CategoryProducer producer;
 
     @Override
     public CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
@@ -63,7 +67,13 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryFromDB != null)
             throw new APIException("Category with the name " + category.getCategoryName() + " already exists.");
         Category savedCategory = categoryRepository.save(category);
-        return modelMapper.map(savedCategory, CategoryDTO.class);
+
+        CategoryDTO createdCategory = modelMapper.map(savedCategory, CategoryDTO.class);
+
+        // messaging - RabbitMQ
+        producer.sendCreatedCategory(createdCategory);
+
+        return createdCategory;
     }
 
     @Override
